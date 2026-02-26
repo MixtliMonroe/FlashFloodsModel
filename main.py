@@ -10,7 +10,7 @@ def generate_wetted_perimeter(n, ld):
 
   if n == 1: # Triangular wedge
     def l(h):
-      return 2*np.sqrt(h*(h + 4/ld**2))
+      return h*np.sqrt(1 + 4*ld**2)
   
   elif n == 2: # Parabolic riverbed
     def l(h):
@@ -49,11 +49,11 @@ def generate_v(l, n, ld):
 if __name__ == "__main__":
 
   # Define initial condtition
-  def h_init(x):
+  def A_init(x):
     return np.exp(-x**2)
 
   # Choose values of n and lambda
-  n_arr  = [1, 2, 3, 1e100]
+  n_arr  = [1, 2, 5, 1e100]
   ld_arr = [.1, .5, 1, 2, 3, 4, 5]
 
   fig, axes = plt.subplots(len(n_arr), len(ld_arr), sharey=True)
@@ -62,6 +62,9 @@ if __name__ == "__main__":
     for j, ld in enumerate(ld_arr):
       l = generate_wetted_perimeter(n=n, ld=ld)
       v = generate_v(l=l, n=n, ld=ld)
+
+      def h_init(x):
+        return (((n+1)/n) * A_init(x))**(n/(n+1))
 
       x0 = np.linspace(-5, 5, 200)
       h0 = h_init(x0)
