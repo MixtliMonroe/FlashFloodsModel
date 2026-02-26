@@ -85,5 +85,5 @@ if __name__ == "__main__":
   fig.suptitle("Characteristic curves for different shapes and λ")
   fig.set_size_inches(20, 12)
   fig.tight_layout(rect=[0, 0, 1, 1])
-  plt.savefig("Characteristics.png", dpi=500)
+  plt.savefig("img/characteristics.png", dpi=500)
   plt.show()
