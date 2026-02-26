@@ -42,25 +42,48 @@ def generate_wetted_perimeter(n, ld):
 def generate_v(l, n, ld):
   def v(h):
     A = (n/(n+1))*h**((n+1)/n)
-    return (1/2)*np.sqrt(A/l(h))*(3 - (n/(n+1))*(h/l(h))*np.sqrt((1/n**2)*h*(2*(1-n)/n) + 4*ld**2))
+    return (1/2)*np.sqrt(A/l(h))*(3 - (n/(n+1))*(h/l(h))*np.sqrt((1/n**2)*h**(2*(1-n)/n) + 4*ld**2))
   return v
 
 
 if __name__ == "__main__":
-  n = 1
-  ld = 1
 
-  l = generate_wetted_perimeter(n=n, ld=ld)
-  v = generate_v(l=l, n=n, ld=ld)
-
+  # Define initial condtition
   def h_init(x):
     return np.exp(-x**2)
-  
-  x0 = np.linspace(-5,5,500)
-  h0 = h_init(x0)
-  t = np.linspace(0,5,2)
 
-  for x, h in zip(x0, h0):
-    plt.plot(v(h)*t+x, t, color="black", lw=.1)
-  
+  # Choose values of n and lambda
+  n_arr  = [1, 2, 3, 1e100]
+  ld_arr = [.1, .5, 1, 2, 3, 4, 5]
+
+  fig, axes = plt.subplots(len(n_arr), len(ld_arr), sharey=True)
+
+  for i, n in enumerate(n_arr):
+    for j, ld in enumerate(ld_arr):
+      l = generate_wetted_perimeter(n=n, ld=ld)
+      v = generate_v(l=l, n=n, ld=ld)
+
+      x0 = np.linspace(-5, 5, 200)
+      h0 = h_init(x0)
+      t = np.linspace(0, 7, 2)
+
+      ax = axes[i, j]
+      # plot characteristic lines for each initial height
+      for x, h in zip(x0, h0):
+        ax.plot(v(h) * t + x, t, color="black", lw=0.5)
+
+      # formatting
+      ax.set_xlim(-5, 5)
+      ax.set_ylim(0, 7)
+      if i == len(n_arr) - 1:
+        ax.set_xlabel("x position")
+      if j == 0:
+        ax.set_ylabel("time t")
+      ax.set_title(f"n={n}, λ={ld}")
+      ax.grid(True, linestyle=':', alpha=0.6)
+
+  fig.suptitle("Characteristic curves for different shapes and λ")
+  fig.set_size_inches(20, 12)
+  fig.tight_layout(rect=[0, 0, 1, 1])
+  plt.savefig("Characteristics.png", dpi=500)
   plt.show()
