@@ -38,4 +38,58 @@
 
 \section{Introduction}
 
+\section{Physical Model}
+
+\section{Nondimensionalisation}
+Equation \eqref{} suggests the height of the river from its deepest point $h$ as a function of the river's width $w$ follows:
+\begin{align*}
+    h(w) = h_0 (w/w_0)^n
+\end{align*}
+where $h_0$ and $w_0$ are defined to be the unique values where $w=w_0\iff h=h_0$ for all $n$.\\
+This naturally leads to the relabelling $h\rightarrow \tilde{h}=:h_0h$ and $w\rightarrow \tilde{w}=:w_0w$ where the height and width of the river can now be measured with dimensionless quantities $h,w$ as multiples of the characteristic height and width $h_0,w_0$.\\
+The cross-sectional area is thus:
+\begin{align*}
+    A=h_0w_0\frac{n}{n+1}h^{\frac{n+1}{n}}
+\end{align*}
+Which also naturally suggests relabelling to measure the cross-sectional area in units of $h_0w_0$: $A\rightarrow \tilde{A}=:h_0w_0A$.\\
+So far, we have the relations:
+\begin{align*}
+    h &= w^n \tag{5}\label{eq5}\\
+    A &= \frac{n}{n+1}h^{\frac{n+1}{n}} \tag{6}\label{eq6}
+\end{align*}
+Substituting these into the PDE \eqref{} yields:
+\begin{align*}
+    \frac{\partial A}{\partial t}+\sqrt{\frac{gh_0w_0\sin\alpha}{f}}\frac{\partial}{\partial s}\left[\sqrt{\frac{A^3}{L[\tilde{h}]}}\ \right]=0
+\end{align*}
+The remaining dimensionfull quantities in this equation are $s,t,$ and $L$ with the wetted perimeter $L$ being the least trivial to nondimensionalise.\\
+To do so, consider the explicit integral form (in terms of the half-width $\tilde{w}/2$):
+\begin{align*}
+    L &= 2\int_0^{\tilde{w}/2}\sqrt{1+\left(\frac{d\tilde{h}}{d[\tilde{w}'/2]}\right)^2}\ d[\tilde{w}'/2]\\
+    &=w_0\ 2\int_0^{w/2}\sqrt{1+\left(\lambda \frac{dh}{d[w'/2]}\right)^2}\ d[w'/2]
+\end{align*}
+where the aspect ratio $\lambda$ is defined as $\lambda:=h_0/w_0$. Notice that $\lambda$ cannot be factored out, and so is a necessary physical parameter.\\
+This naturally suggests measuring $L$ in units of $w_0$, so relabelling $L[\tilde{h}]\rightarrow\tilde{L}[\tilde{h}]=:w_0 L[\lambda]$ results in the PDE taking the form:
+\begin{align*}
+    \frac{\partial A}{\partial t}+\sqrt{\frac{gh_0\sin\alpha}{f}}\frac{\partial}{\partial s}\left[\sqrt{\frac{A^3}{L[\lambda]}}\ \right]=0
+\end{align*}
+Notice that the term $\sqrt{gh_0\sin(\alpha)/f}$ has units of velocity. This can be used to define some characteristic velocity $v_c:=\sqrt{gh_0\sin(\alpha)/f}$ so that, in relabelling $s\rightarrow\tilde{s}=:Ss,t\rightarrow\tilde{t}=:Tt$ to measure with dimensionless quantities $s$ and $t$, we can choose $S=v_cT$ for the PDE to take the simple form:
+\begin{align*}
+    \frac{\partial A}{\partial t} + \frac{\partial}{\partial s}\left[\sqrt{\frac{A^3}{L[\lambda]}}\ \right]=0 \tag{7}\label{eq7}
+\end{align*}
+Notice that $v_c$ aligns nicely with the definition of $\bar{u}$, providing a unit for area-averaged fluid velocity too if need be.\\
+To conclude the nondimensionalisation process, we have:
+\begin{align*}
+    h:=\tilde{h}/h_0,\ &w:=\tilde{w}/w_0,\\
+    A:=\tilde{A}/(h_0w_0),\ &L:=\tilde{L}/w_0,\\
+    s:=\tilde{s}/S,\ &t:=\tilde{t}/(v_cS)\\
+    \text{where }v_c:=&\sqrt{gh_0\sin(\alpha)/f}\tag{8}\label{eq8}\\
+\end{align*}
+
+
+
+
+\section{Method of Characteristics}
+Equation \eqref{eq6}, although compact, is not a very useful form
+
+
 \end{document}
