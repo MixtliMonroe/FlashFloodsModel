@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp, quad
 
 def generate_wetted_perimeter(n, ld):
+  '''
+  Generates a function for the wetted perimeter of a given riverbed shape parametrised by n and aspect ratio lambda.
+  '''
   def _ensure_array(x):
     scalar = np.isscalar(x)
     arr = np.atleast_1d(x)
@@ -39,29 +42,25 @@ def generate_wetted_perimeter(n, ld):
 
   return l
 
-def generate_v(l, n, ld):
+def generate_characteristic_gradient(l, n, ld):
+  '''
+  Generates a function for the gradient of a characteristic for a given riverbed shape parametrised by n, wetted perimeter l, and aspect ratio lambda.
+  '''
   def v(h):
     A = (n/(n+1))*h**((n+1)/n)
     return (1/2)*np.sqrt(A/l(h))*(3 - (n/(n+1))*(h/l(h))*np.sqrt((1/n**2)*h**(2*(1-n)/n) + 4*ld**2))
   return v
 
-
-if __name__ == "__main__":
-
-  # Define initial condtition
-  def A_init(x):
-    return np.exp(-x**2)
-
-  # Choose values of n and lambda
-  n_arr  = [1, 2, 5, 1e100]
-  ld_arr = [.1, .5, 1, 2, 3, 4, 5]
-
+def plot_characteristic_curves(A_init=lambda x: np.exp(-x**2), n_arr=[1, 2, 5, 1e100], ld_arr=[.1, .5, 1, 2, 3, 4, 5]):
+  '''
+  Plots the characteristic curves for various n and lambda and for a given initial condition
+  '''
   fig, axes = plt.subplots(len(n_arr), len(ld_arr), sharey=True)
 
   for i, n in enumerate(n_arr):
     for j, ld in enumerate(ld_arr):
       l = generate_wetted_perimeter(n=n, ld=ld)
-      v = generate_v(l=l, n=n, ld=ld)
+      v = generate_characteristic_gradient(l=l, n=n, ld=ld)
 
       def h_init(x):
         return (((n+1)/n) * A_init(x))**(n/(n+1))
@@ -85,8 +84,30 @@ if __name__ == "__main__":
       ax.set_title(f"n={n}, λ={ld}")
       ax.grid(True, linestyle=':', alpha=0.6)
 
-  fig.suptitle("Characteristic curves for different shapes and λ")
-  fig.set_size_inches(20, 12)
-  fig.tight_layout(rect=[0, 0, 1, 1])
-  plt.savefig("img/characteristics.png", dpi=500)
-  plt.show()
+    fig.suptitle("Characteristic curves for different shapes and λ")
+    fig.set_size_inches(20, 12)
+    fig.tight_layout(rect=[0, 0, 1, 1])
+    #plt.savefig("img/characteristics.png", dpi=500)
+
+
+if __name__ == "__main__":
+  n  = 1
+  ld = 1
+
+  l = generate_wetted_perimeter(n, ld)
+  v = generate_characteristic_gradient(l, n, ld)
+  
+  def v_deriv(h, dh=1e-10):
+    return (v(h+dh)-v(h-dh))/(2*dh)
+
+
+  def A_init(x):
+    return np.exp(-x**2)
+
+  def h_init(x):
+    return (((n+1)/n) * A_init(x))**(n/(n+1))
+  
+  def h_init_deriv(h, dh=1e-10):
+    return (h_init(h+dh)-h_init(h-dh))/(2*dh)
+  
+  x = np.linspace(0, 10)
