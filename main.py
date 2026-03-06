@@ -25,7 +25,7 @@ def generate_wetted_perimeter(n, ld):
   
   else: # general n vectorised
     def scalar_l(h_scalar, fulloutput=False):
-      dLdh = lambda hh: (1/n)*hh**((1-n)/n)
+      dLdh = lambda hh: (1/n)*np.power(hh,((1-n)/n))
       res = quad(lambda hh: np.sqrt(dLdh(hh)**2 + 4*ld**2), 0, h_scalar)
       return res if fulloutput else res[0]
 
@@ -91,7 +91,7 @@ def plot_characteristic_curves(A_init=lambda x: np.exp(-x**2), n_arr=[1, 2, 5, 1
 
 
 if __name__ == "__main__":
-  n  = 1
+  n  = 10
   ld = 1
 
   l = generate_wetted_perimeter(n, ld)
@@ -102,12 +102,49 @@ if __name__ == "__main__":
 
 
   def A_init(x):
-    return np.exp(-x**2)
+    return (1/2)*(1-np.tanh(x))
+
+  if False:
+    plot_characteristic_curves(A_init=A_init, n_arr=[n,n+1], ld_arr=[ld, ld+1])
+    plt.show()
 
   def h_init(x):
     return (((n+1)/n) * A_init(x))**(n/(n+1))
   
-  def h_init_deriv(h, dh=1e-10):
-    return (h_init(h+dh)-h_init(h-dh))/(2*dh)
+  def h_init_deriv(x, dx=1e-10):
+    return (h_init(x+dx)-h_init(x-dx))/(2*dx)
   
-  x = np.linspace(0, 10)
+  def dv_dP(x, dx=1e-10):
+    return (v(h_init(x+dx)) - v(h_init(x-dx)))/(2*dx)
+
+
+  x = np.linspace(1e-5, 10, 500)
+  plt.plot(x, v(x))
+  plt.show()
+
+  '''
+  p1 = np.linspace(0, 5, int(1e3))
+  p2 = np.linspace(0, 5, int(1e3))
+  P1, P2 = np.meshgrid(p1, p2)
+  T = np.clip((P1 - P2)/(v(h_init(P2)) - v(h_init(P1))), a_min=-10, a_max=10)
+
+  idx = np.nanargmin(T.flatten())
+  print(np.nanmin(T))
+  print("min coords:", P1.flatten()[idx], P2.flatten()[idx])
+  print(f"dP = {p1[1]-p1[0]}")
+
+  # Plot the surface
+  fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+  ax.plot_surface(P1, P2, T)
+  ax.set_zlim(np.nanmin(T), np.nanmax(T))
+  ax.set_xlabel("P1")
+  ax.set_ylabel("P2")
+  ax.set_zlabel("T")
+
+  x = np.linspace(0, 5, 100)
+  ax.plot(x, x, np.clip(-1/dv_dP(x), a_min=-10, a_max=10))
+
+  plt.show()'''
+
+
+  
